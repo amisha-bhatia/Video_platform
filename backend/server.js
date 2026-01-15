@@ -11,7 +11,7 @@ const PORT = process.env.PORT ||4000;
 
 /* ================= MIDDLEWARE ================= */
 app.use(cors({
-  origin: 'https://benevolent-starship-f955d3.netlify.app'
+  origin: 'https://your-new-site-name.netlify.app'
 }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
