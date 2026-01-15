@@ -11,7 +11,7 @@ const PORT = process.env.PORT ||4000;
 
 /* ================= MIDDLEWARE ================= */
 app.use(cors({
-  origin: 'https://elegant-kashata-84e99a.netlify.app'
+  origin: 'https://bespoke-begonia-e609db.netlify.app'
 }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
