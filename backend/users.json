@@ -1,0 +1,12 @@
+[
+  {
+    "id": "admin",
+    "password": "$2b$10$LrY2feApmwN/m3FNWfzlHeW6Zmwe0wOlGoFi3mePoyIul/Oc7ABja",
+    "role": "admin"
+  },
+  {
+    "id": "worker1",
+    "password": "$2b$10$LrY2feApmwN/m3FNWfzlHeW6Zmwe0wOlGoFi3mePoyIul/Oc7ABja",
+    "role": "viewer"
+  }
+]
