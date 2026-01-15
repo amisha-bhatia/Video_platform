@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
-const BASE_URL = 'https://video-platform-tz2j.onrender.com';
+const BASE_URL = 'https://video-platform-tz2j.onrender.com'; // Render backend
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,7 +24,7 @@ function App() {
   // ===== LOGIN =====
   const login = async () => {
     setError('');
-    const res = await fetch('${BASE_URL}/api/login', {
+    const res = await fetch(`${BASE_URL}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, password })
@@ -49,7 +49,7 @@ function App() {
 
   // ===== FETCH VIDEOS =====
   const fetchVideos = async () => {
-    const res = await fetch('${BASE_URL}/api/videos');
+    const res = await fetch(`${BASE_URL}/api/videos`);
     setVideos(await res.json());
   };
 
@@ -66,11 +66,16 @@ function App() {
     formData.append('category', category);
     formData.append('video', file);
 
-    await fetch('${BASE_URL}/api/videos', {
+    const res = await fetch(`${BASE_URL}/api/videos`, {
       method: 'POST',
       headers: { 'x-role': user.role },
       body: formData
     });
+
+    if (!res.ok) {
+      alert('Upload failed');
+      return;
+    }
 
     setTitle('');
     setDescription('');
@@ -82,15 +87,12 @@ function App() {
 
   // ===== DELETE VIDEO =====
   const deleteVideo = async () => {
-    if (!confirm('Delete this video?')) return;
+    if (!window.confirm('Delete this video?')) return;
 
-    const res = await fetch(
-      `${BASE_URL}/api/videos/${selectedVideo.id}`,
-      {
-        method: 'DELETE',
-        headers: { 'x-role': user.role }
-      }
-    );
+    const res = await fetch(`${BASE_URL}/api/videos/${selectedVideo.id}`, {
+      method: 'DELETE',
+      headers: { 'x-role': user.role }
+    });
 
     if (!res.ok) {
       alert('Delete failed');
@@ -107,8 +109,17 @@ function App() {
       <div className="login-page">
         <div className="login-card">
           <h2>Training Portal</h2>
-          <input placeholder="User ID" value={id} onChange={e => setId(e.target.value)} />
-          <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+          <input
+            placeholder="User ID"
+            value={id}
+            onChange={e => setId(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
           <button onClick={login}>Login</button>
           {error && <p className="error">{error}</p>}
         </div>
@@ -156,13 +167,20 @@ function App() {
       </div>
 
       <div className="container">
-
         {/* ===== UPLOAD PAGE ===== */}
         {page === 'upload' && user.role === 'admin' && (
           <div className="card">
             <h3>Upload Training Video</h3>
-            <input placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} />
-            <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
+            <input
+              placeholder="Title"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
+            <textarea
+              placeholder="Description"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+            />
             <select value={category} onChange={e => setCategory(e.target.value)}>
               <option value="">Select category</option>
               {categories.map(cat => (
@@ -219,11 +237,15 @@ function App() {
             <button className="back" onClick={() => setSelectedVideo(null)}>← Back</button>
             <h2>{selectedVideo.title}</h2>
             <p className="description">{selectedVideo.description}</p>
-            {user.role === 'admin' && <button className="delete" onClick={deleteVideo}>🗑️ Delete Video</button>}
-            <video controls src={`${BASE_URL}/uploads/${selectedVideo.filename}`} />
+            {user.role === 'admin' && (
+              <button className="delete" onClick={deleteVideo}>🗑️ Delete Video</button>
+            )}
+            <video
+              controls
+              src={`${BASE_URL}/uploads/${selectedVideo.filename}`}
+            />
           </div>
         )}
-
       </div>
     </>
   );
