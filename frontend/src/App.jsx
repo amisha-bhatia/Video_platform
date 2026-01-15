@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
+const BASE_URL = 'https://video-platform-tz2j.onrender.com';
+
 function App() {
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
@@ -22,7 +24,7 @@ function App() {
   // ===== LOGIN =====
   const login = async () => {
     setError('');
-    const res = await fetch('http://localhost:4000/api/login', {
+    const res = await fetch('${BASE_URL}/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, password })
@@ -47,7 +49,7 @@ function App() {
 
   // ===== FETCH VIDEOS =====
   const fetchVideos = async () => {
-    const res = await fetch('http://localhost:4000/api/videos');
+    const res = await fetch('${BASE_URL}/api/videos');
     setVideos(await res.json());
   };
 
@@ -64,7 +66,7 @@ function App() {
     formData.append('category', category);
     formData.append('video', file);
 
-    await fetch('http://localhost:4000/api/videos', {
+    await fetch('${BASE_URL}/api/videos', {
       method: 'POST',
       headers: { 'x-role': user.role },
       body: formData
@@ -83,7 +85,7 @@ function App() {
     if (!confirm('Delete this video?')) return;
 
     const res = await fetch(
-      `http://localhost:4000/api/videos/${selectedVideo.id}`,
+      `${BASE_URL}/api/videos/${selectedVideo.id}`,
       {
         method: 'DELETE',
         headers: { 'x-role': user.role }
@@ -218,7 +220,7 @@ function App() {
             <h2>{selectedVideo.title}</h2>
             <p className="description">{selectedVideo.description}</p>
             {user.role === 'admin' && <button className="delete" onClick={deleteVideo}>🗑️ Delete Video</button>}
-            <video controls src={`http://localhost:4000/uploads/${selectedVideo.filename}`} />
+            <video controls src={`${BASE_URL}/uploads/${selectedVideo.filename}`} />
           </div>
         )}
 
