@@ -7,10 +7,12 @@ const { v4: uuid } = require('uuid');
 const path = require('path');
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT ||4000;
 
 /* ================= MIDDLEWARE ================= */
-app.use(cors());
+app.use(cors({
+  origin: 'https://elegant-kashata-84e99a.netlify.app'
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
