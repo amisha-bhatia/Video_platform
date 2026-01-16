@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: Video Platform API
+  version: 1.0.0
+  description: API documentation for the Video Platform backend
+servers:
+  - url: http://localhost:4000
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /api/login:
+    post:
+      summary: User login
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: admin1
+                password:
+                  type: string
+                  example: password123
+              required:
+                - id
+                - password
+      responses:
+        "200":
+          description: Login successful, returns JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  id:
+                    type: string
+                  role:
+                    type: string
+        "401":
+          description: Invalid ID or password
+
+  /api/videos:
+    get:
+      summary: Get all videos
+      tags:
+        - Videos
+      responses:
+        "200":
+          description: List of videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    category:
+                      type: string
+                    filename:
+                      type: string
+                    original_name:
+                      type: string
+    post:
+      summary: Upload a new video (Admin only)
+      tags:
+        - Videos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+                category:
+                  type: string
+                description:
+                  type: string
+              required:
+                - video
+                - title
+                - category
+      responses:
+        "200":
+          description: Video uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  category:
+                    type: string
+                  filename:
+                    type: string
+                  original_name:
+                    type: string
+        "400":
+          description: Missing fields
+        "403":
+          description: Forbidden (not admin)
+        "500":
+          description: Upload failed
+
+  /api/videos/{id}:
+    delete:
+      summary: Delete a video (Admin only)
+      tags:
+        - Videos
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the video to delete
+      responses:
+        "204":
+          description: Video deleted successfully
+        "403":
+          description: Forbidden (not admin)
+        "404":
+          description: Video not found
+        "500":
+          description: Delete failed
