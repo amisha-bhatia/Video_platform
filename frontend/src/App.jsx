@@ -21,37 +21,50 @@ function App() {
 
   const categories = ['diecast', 'kakou', 'kumitate', 'kaihatsu'];
 
-  // ===== LOGIN =====
-  const login = async () => {
-    setError('');
-    const res = await fetch(`${BASE_URL}/api/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, password })
-    });
-
-    if (!res.ok) {
-      setError('Invalid ID or password');
-      return;
-    }
-
-    const data = await res.json();
-    setUser(data);
-    fetchVideos();
-  };
-
-  const logout = () => {
-    setUser(null);
-    setSelectedVideo(null);
-    setSelectedCategory(null);
-    setPage('home');
-  };
-
   // ===== FETCH VIDEOS =====
   const fetchVideos = async () => {
     const res = await fetch(`${BASE_URL}/api/videos`);
     setVideos(await res.json());
   };
+  useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    setUser({ id: payload.id, role: payload.role });
+    fetchVideos();
+  } catch {
+    localStorage.removeItem('token');
+  }
+  }, []);
+  // ===== LOGIN =====
+  const login = async () => {
+  setError('');
+  const res = await fetch(`${BASE_URL}/api/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, password })
+  });
+
+  if (!res.ok) {
+    setError('Invalid ID or password');
+    return;
+  }
+
+  const data = await res.json();
+
+  // ✅ STORE TOKEN
+  localStorage.setItem('token', data.token);
+
+  setUser({
+    id: data.id,
+    role: data.role
+  });
+
+  fetchVideos();
+};
+  
 
   // ===== UPLOAD VIDEO =====
   const uploadVideo = async () => {
@@ -68,7 +81,9 @@ function App() {
 
     const res = await fetch(`${BASE_URL}/api/videos`, {
       method: 'POST',
-      headers: { 'x-role': user.role },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
       body: formData
     });
 
@@ -87,11 +102,14 @@ function App() {
 
   // ===== DELETE VIDEO =====
   const deleteVideo = async () => {
+    if (!selectedVideo) return;
     if (!window.confirm('Delete this video?')) return;
 
     const res = await fetch(`${BASE_URL}/api/videos/${selectedVideo.id}`, {
       method: 'DELETE',
-      headers: { 'x-role': user.role }
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!res.ok) {
@@ -102,7 +120,13 @@ function App() {
     setSelectedVideo(null);
     fetchVideos();
   };
-
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setSelectedVideo(null);
+    setSelectedCategory(null);
+    setPage('home');
+  };
   // ===== LOGIN VIEW =====
   if (!user) {
     return (
