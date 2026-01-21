@@ -15,4 +15,25 @@ router.post('/', requireAuth, validate(progressSchema), async (req, res) => {
   res.json({ success: true });
 });
 
+router.get('/', requireAuth, async (req, res) => {
+  try {
+    const { videoIds } = req.query; // comma-separated string
+    const ids = videoIds.split(',');
+    const userId = req.user.id;
+
+    const progressList = await Promise.all(
+      ids.map(async (id) => {
+        const progress = await Progress.getByUserAndVideo(userId, id);
+        return { videoId: id, lastPosition: progress?.lastPosition || 0, duration: progress?.duration || 0 };
+      })
+    );
+
+    res.json(progressList);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
+

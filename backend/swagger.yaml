@@ -1,16 +1,83 @@
 openapi: 3.0.0
 info:
   title: Video Platform API
-  version: 1.0.0
-  description: API documentation for the Video Platform backend
+  version: 1.1.0
+  description: |
+    API documentation for the Video Platform backend.
+    Includes authentication, video management, and watch progress tracking.
+
 servers:
   - url: http://localhost:4000
+  - url: https://video-platform-tz2j.onrender.com
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  schemas:
+    Video:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        title:
+          type: string
+          example: "How to assemble diecast models"
+        description:
+          type: string
+          example: "Step by step guide"
+        category:
+          type: string
+          example: "diecast"
+        filename:
+          type: string
+          example: "video123.mp4"
+        original_name:
+          type: string
+          example: "assemble_diecast.mp4"
+        created_at:
+          type: string
+          format: date-time
+        last_position:
+          type: integer
+          example: 120
+        duration:
+          type: integer
+          example: 3600
+        completed:
+          type: boolean
+          example: false
+
+    LoginRequest:
+      type: object
+      required:
+        - id
+        - password
+      properties:
+        id:
+          type: string
+          example: admin1
+        password:
+          type: string
+          example: password123
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        id:
+          type: string
+        role:
+          type: string
+
+security:
+  - bearerAuth: []
+
 paths:
   /api/login:
     post:
@@ -22,37 +89,40 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: admin1
-                password:
-                  type: string
-                  example: password123
-              required:
-                - id
-                - password
+              $ref: "#/components/schemas/LoginRequest"
       responses:
         "200":
           description: Login successful, returns JWT
           content:
             application/json:
               schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Invalid ID or password
+
+  /api/me:
+    get:
+      summary: Get current user info
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: Current logged-in user info
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
-                  token:
-                    type: string
                   id:
                     type: string
                   role:
                     type: string
         "401":
-          description: Invalid ID or password
+          description: Unauthorized
 
   /api/videos:
     get:
-      summary: Get all videos
+      summary: Get all videos (with optional user progress)
       tags:
         - Videos
       responses:
@@ -63,66 +133,39 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    title:
-                      type: string
-                    description:
-                      type: string
-                    category:
-                      type: string
-                    filename:
-                      type: string
-                    original_name:
-                      type: string
+                  $ref: "#/components/schemas/Video"
+
     post:
       summary: Upload a new video (Admin only)
       tags:
         - Videos
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - video
+                - title
+                - category
               properties:
                 video:
                   type: string
                   format: binary
                 title:
                   type: string
-                category:
-                  type: string
                 description:
                   type: string
-              required:
-                - video
-                - title
-                - category
+                category:
+                  type: string
       responses:
         "200":
           description: Video uploaded successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  title:
-                    type: string
-                  description:
-                    type: string
-                  category:
-                    type: string
-                  filename:
-                    type: string
-                  original_name:
-                    type: string
+                $ref: "#/components/schemas/Video"
         "400":
           description: Missing fields
         "403":
@@ -135,8 +178,6 @@ paths:
       summary: Delete a video (Admin only)
       tags:
         - Videos
-      security:
-        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -153,3 +194,74 @@ paths:
           description: Video not found
         "500":
           description: Delete failed
+
+  /api/videos/{id}/progress:
+    get:
+      summary: Get user's progress for a video
+      tags:
+        - Video Progress
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Video ID
+      responses:
+        "200":
+          description: User progress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  last_position:
+                    type: integer
+                  duration:
+                    type: integer
+                  completed:
+                    type: boolean
+        "401":
+          description: Unauthorized
+        "404":
+          description: Video not found
+
+    post:
+      summary: Update user's progress for a video
+      tags:
+        - Video Progress
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Video ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - last_position
+                - duration
+              properties:
+                last_position:
+                  type: integer
+                  example: 300
+                duration:
+                  type: integer
+                  example: 1200
+                completed:
+                  type: boolean
+                  example: false
+      responses:
+        "200":
+          description: Progress updated
+        "401":
+          description: Unauthorized
+        "404":
+          description: Video not found
+        "500":
+          description: Server error
