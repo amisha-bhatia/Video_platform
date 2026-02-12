@@ -1,0 +1,259 @@
+.video-player-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.video-player-wrapper {
+  position: relative;
+  width: 100%;
+  background: #0a0a0a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+.video-player {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.video-player-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  z-index: 10;
+}
+
+.video-player-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  z-index: 20;
+}
+
+.video-player-error .error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.video-player-error .error-icon {
+  font-size: 3rem;
+}
+
+.video-player-error .error-message {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #fecaca;
+}
+
+.video-player-error .error-retry {
+  padding: 0.5rem 1.5rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.video-player-error .error-retry:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.video-player-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.video-player-wrapper:hover .video-player-overlay {
+  opacity: 1;
+}
+
+.video-progress-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.1s linear;
+}
+
+.video-controls-hint {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hint-item {
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.video-info {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6;
+}
+
+.video-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.video-description {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.video-metadata {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  background: #f9fafb;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.metadata-icon {
+  font-size: 1rem;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .video-player-container {
+    padding: 1rem;
+  }
+
+  .video-controls-hint {
+    display: none;
+  }
+
+  .video-info {
+    padding: 1rem;
+  }
+
+  .video-title {
+    font-size: 1.25rem;
+  }
+
+  .video-metadata {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-player-container {
+    padding: 0.5rem;
+  }
+
+  .video-info {
+    padding: 0.75rem;
+  }
+
+  .video-title {
+    font-size: 1.125rem;
+  }
+
+  .metadata-item {
+    width: 100%;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .video-info {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .video-title {
+    color: #f9fafb;
+  }
+
+  .video-description {
+    color: #9ca3af;
+  }
+
+  .metadata-item {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e5e7eb;
+  }
+}

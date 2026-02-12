@@ -1,0 +1,234 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);
+  padding: 2rem;
+}
+
+.home-content {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+}
+
+.home-header {
+  margin-bottom: 3rem;
+}
+
+.home-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  color: #4f46e5;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e0e7ff;
+}
+
+.home-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.home-title-emoji {
+  margin-left: 0.75rem;
+  font-size: 3rem;
+  display: inline-block;
+  animation: wave 2.5s infinite;
+  transform-origin: 70% 70%;
+}
+
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.home-subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 4rem;
+  box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.4);
+}
+
+.home-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 30px -5px rgba(102, 126, 234, 0.5);
+}
+
+.home-cta:active {
+  transform: translateY(0);
+  box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.4);
+}
+
+.cta-icon {
+  transition: transform 0.2s;
+  font-size: 1.25rem;
+}
+
+.home-cta:hover .cta-icon {
+  transform: translateX(4px);
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.feature {
+  padding: 2rem 1.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+  border: 1px solid #f3f4f6;
+}
+
+.feature:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  border-color: #e0e7ff;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+}
+
+.feature-description {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home {
+    padding: 1.5rem;
+  }
+
+  .home-title {
+    font-size: 2.5rem;
+  }
+
+  .home-title-emoji {
+    font-size: 2.25rem;
+  }
+
+  .home-subtitle {
+    font-size: 1.125rem;
+  }
+
+  .home-features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .feature {
+    padding: 1.5rem;
+  }
+
+  .home-cta {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 1.875rem;
+  }
+
+  .home-title-emoji {
+    font-size: 1.75rem;
+    margin-left: 0.5rem;
+  }
+
+  .home-badge {
+    font-size: 0.75rem;
+  }
+
+  .home-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .home {
+    background: linear-gradient(145deg, #0f172a 0%, #0a0f1e 100%);
+  }
+
+  .home-title {
+    color: #f9fafb;
+  }
+
+  .home-subtitle {
+    color: #9ca3af;
+  }
+
+  .home-badge {
+    background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+    border-color: #4f46e540;
+  }
+
+  .feature {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .feature-title {
+    color: #f9fafb;
+  }
+
+  .feature-description {
+    color: #9ca3af;
+  }
+}
